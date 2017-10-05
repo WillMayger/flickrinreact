@@ -1,15 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Tile from './Tile';
 
 const Tiles = (props) => {
-  const tiles = props.feeds.map(item => (
-    <Tiles
-      key={`tile ${item.link}`}
-      {...item}
-    />
-  ));
+  let tiles = 'No Feed Available';
+  if (props.feeds && props.feeds !== {}) {
+    tiles = props.feeds.map(item => (
+      <Tile
+        key={`tile ${item.link} ${item.title} ${item.author} ${item.published} ${item.date_taken}`}
+        {...item}
+      />
+    ));
+  }
+
   return (
-    <div className="tiles">
+    <div id="tiles" className="tiles">
       <div className="inner">
         {tiles}
       </div>

@@ -5,7 +5,7 @@ const Tile = props => (
   <div className="tile">
     <div className="inner">
       <div className="thumb">
-        <img src={props.img} title={props.title} alt={props.title} />
+        <img src={props.media.m} title={props.title} alt={props.title} />
       </div>
       <div className="text-container">
         <span><a href={props.photoLink} title={props.title}>{props.title}</a></span>
@@ -18,14 +18,19 @@ const Tile = props => (
   </div>
 );
 
+Tile.defaultProps = {
+  photoLink: '#',
+  authorLink: '#',
+};
+
 Tile.propTypes = {
-  img: PropTypes.string.isRequired,
+  media: PropTypes.object.isRequired,
   title: PropTypes.string.isRequired,
   author: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   tags: PropTypes.array.isRequired,
-  photoLink: PropTypes.string.isRequired,
-  authorLink: PropTypes.string.isRequired,
+  photoLink: PropTypes.string,
+  authorLink: PropTypes.string,
 };
 
 export default Tile;
