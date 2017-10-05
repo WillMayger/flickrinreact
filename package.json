@@ -20,7 +20,14 @@
     "eslint-config-airbnb": "^15.1.0",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
-    "eslint-plugin-react": "^7.4.0"
+    "eslint-plugin-react": "^7.4.0",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-cssnano": "^2.1.2",
+    "gulp-exec": "^2.1.3",
+    "gulp-sass": "^3.1.0",
+    "gulp-useref": "^3.1.2",
+    "merge-stream": "^1.0.1"
   },
   "_comment": "  \"proxy\": \"http://api.flickr.com\"",
   "proxy": "http://api.flickr.com"

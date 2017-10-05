@@ -4,19 +4,20 @@ import PropTypes from 'prop-types';
 const Tile = props => (
   <div className="tile">
     <div className="inner">
-      <div className="thumb">
-        <img src={props.media.m} title={props.title} alt={props.title} />
-      </div>
-      <div className="text-container">
-        <span><a href={props.photoLink} title={props.title}>{props.title}</a></span>
-        <span><a href={props.authorLink} title={props.author}>{props.author}</a></span>
-        <span>{props.description}</span>
-        <span>{props.tags}</span>
-        <span>{props.title}</span>
-      </div>
+      <a href={props.photoLink} title={props.title}>
+        <div className="thumb">
+          <img src={props.media.m} title={props.title} alt={props.title} />
+        </div>
+        <div className="text-container">
+          <span className="title">{props.title}</span>
+          <span>{props.description} {props.authorLink}</span>
+          <span>{props.tags}</span>
+        </div>
+      </a>
     </div>
   </div>
 );
+// a href={props.authorLink} title={props.author}>{props.author}</a>
 
 Tile.defaultProps = {
   photoLink: '#',

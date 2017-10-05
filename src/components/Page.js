@@ -11,7 +11,6 @@ export default class FlickrPage extends Component {
       query: '',
       feeds: [],
       feedsPreSearch: [],
-      clientHeight: 0,
     };
 
     this.updateSearchQuery = this.updateSearchQuery.bind(this);
@@ -20,35 +19,30 @@ export default class FlickrPage extends Component {
   }
 
   componentWillMount() {
-    const clientHeight = document.querySelector('body').clientHeight;
-    this.setState({ clientHeight });
+    this.callApi();
   }
 
   componentDidMount() {
-    this.callApi();
-    document.addEventListener('scroll', this.infinateScroll);
+    const tiles = document.querySelector('#tiles');
+    tiles.addEventListener('scroll', this.infinateScroll);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('scroll', this.infinateScroll);
+    const tiles = document.querySelector('#tiles');
+    tiles.removeEventListener('scroll', this.infinateScroll);
   }
 
   infinateScroll() {
-    const tiles = document.querySelector('#wrap');
-    console.log(tiles.scrollTop);
-    if (tiles.scrollTop + tiles.clientHeight >= tiles.scrollHeight && this.state.query === '') {
+    const tiles = document.querySelector('#tiles');
+    if (tiles.scrollTop + tiles.clientHeight >= tiles.scrollHeight) {
       this.callApi();
-    } else {
-      console.log(tiles.scrollTop);
-      console.log(tiles.clientHeight);
-      console.log(tiles.scrollHeight);
     }
   }
 
   updateSearchQuery(e) {
     const query = e.target.value;
-    if (query === '') return;
-    const filterFeeds = this.state.feedsPreSearch.length > 0 ? this.state.feedsPreSearch : this.state.feeds;
+    const filterFeeds = this.state.feedsPreSearch.length > 0 ?
+      this.state.feedsPreSearch : this.state.feeds;
     const feeds = filterFeeds.filter((item) => {
       if (item.title.indexOf(query) >= 0 ||
       item.tags.indexOf(query) >= 0 ||
@@ -58,6 +52,7 @@ export default class FlickrPage extends Component {
       }
       return false;
     });
+
     this.setState({
       query,
       feeds,
@@ -85,9 +80,9 @@ export default class FlickrPage extends Component {
       })
       .then((json) => {
         const stateFeeds = this.state.feeds;
-        const newFeeds = json.items.filter(
-          item => JSON.stringify(stateFeeds).indexOf(JSON.stringify(item)) === -1,
-        );
+        const newFeeds = json.items.filter(item => (
+          JSON.stringify(stateFeeds).indexOf(item.link) === -1
+        ));
         const feeds = [...stateFeeds, ...newFeeds];
         this.setState({ feeds });
       })
@@ -96,16 +91,7 @@ export default class FlickrPage extends Component {
 
   render() {
     return (
-      <div
-        style={{
-          height: `${this.state.clientHeight}px`,
-          overflow: 'auto',
-          width: '100%',
-        }}
-        className="wrap"
-        id="wrap"
-      >
-        <button onClick={e => this.callApi(e)}> add more! </button>
+      <div className="wrap" id="wrap">
         <Container>
           <Nav />
         </Container>
