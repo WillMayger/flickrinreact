@@ -38,10 +38,20 @@ export default class FlickrPage extends Component {
     }
   }
 
-  updateSearchQuery(e) {
-    const query = e.target.value;
-    const filterFeeds = this.state.feedsPreSearch.length > 0 ?
+  updateSearchQuery(e, optionalFeeds = false) {
+    const query = typeof e === 'string' ? e : e.target.value;
+    let filterFeeds = this.state.feedsPreSearch.length > 0 ?
       this.state.feedsPreSearch : this.state.feeds;
+    if (optionalFeeds) filterFeeds = optionalFeeds;
+    if (query === '') {
+      this.setState({
+        query,
+        feeds: filterFeeds,
+        feedsPreSearch: [],
+      });
+      return;
+    }
+
     const feeds = filterFeeds.filter((item) => {
       if (item.title.indexOf(query) >= 0 ||
       item.tags.indexOf(query) >= 0 ||
@@ -82,7 +92,11 @@ export default class FlickrPage extends Component {
         ));
         if (newFeeds.length > 0) {
           const feeds = [...stateFeeds, ...newFeeds];
-          this.setState({ feeds });
+          if (this.state.query !== '') {
+            this.updateSearchQuery(this.state.query, feeds);
+          } else {
+            this.setState({ feeds });
+          }
         }
       })
       .then(() => {
@@ -103,7 +117,7 @@ export default class FlickrPage extends Component {
       const tiles = document.querySelector('#tiles');
       if (tiles != null) {
         if (tiles.scrollTop + tiles.clientHeight >= (tiles.scrollHeight / 3)) {
-          this.callApi();
+          this.callApi(true);
         }
       }
       setInterval(intervalApi, 500);
