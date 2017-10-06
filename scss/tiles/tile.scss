@@ -2,21 +2,24 @@
 
   .tile {
     cursor: pointer;
-    background: #000;
+    box-sizing: border-box;
+    padding: 10px;
     width: 100%;
     max-width: 400px;
-    height: 300px;
+    height: 320px;
     margin: 0 auto;
     overflow: hidden;
-    
+
     .inner {
+      overflow: hidden;
       position: relative;
+      box-shadow: 0 0 12px 0 #000;
     }
-    
+
     a {
       display: block;
     }
-    
+
     .text-container {
       position: absolute;
       text-align: center;
@@ -28,7 +31,7 @@
       height: 100%;
       transform: translateY(-50px);
       background: transparentize(#000, 0.3);
-      
+
       .title {
         display: block;
         color: #fff;
@@ -36,20 +39,31 @@
         line-height: 50px;
       }
     }
-    
+
     .inner {
-      padding: 10px;
+      padding: 0;
     }
-    
+
     .thumb {
       position: relative;
       display: block;
       overflow: hidden;
       width: 100%;
       height: 300px;
-      
+
+      &:after {
+        content: "";
+        position: absolute;
+        display: block;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #000;
+      }
+
     }
-    
+
     img {
       position: absolute;
       top: 50%;
@@ -70,10 +84,9 @@
       max-width: none;
       float: left;
       width: 33.333333%;
-      
+
       .inner {
-        padding: 0px;
-        border: 1px solid #fff;
+        // padding: 10px;
       }
     }
   }

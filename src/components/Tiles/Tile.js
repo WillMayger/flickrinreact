@@ -10,6 +10,7 @@ const Tile = props => (
         </div>
         <div className="text-container">
           <span className="title">{props.title}</span>
+          <span>{props.author}</span>
           <span>{props.description} {props.authorLink}</span>
           <span>{props.tags}</span>
         </div>

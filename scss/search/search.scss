@@ -1,3 +1,34 @@
 .search {
-  height: 10vh;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  padding: 0 50px;
+  height: 70px;
+  line-height: 70px;
+  // box-shadow: 0 11px 24px -6px #000;
+  background: transparentize(#008C8C, 0);
+  border-bottom: 10px solid #000;
+  color: #fff;
+
+  input {
+    box-sizing: border-box;
+    vertical-align: middle;
+    background: transparentize(#fff, 0.7);
+    border-radius: 1px;
+    border: 0;
+    height: 40px;
+    line-height: 40px;
+    width: 50%;
+    color: #fff;
+    font-size: 25px;
+    padding: 0 30px;
+
+    &:focus {
+      border: 0;
+      box-shadow: none;
+      outline: none;
+    }
+  }
 }

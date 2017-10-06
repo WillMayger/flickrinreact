@@ -35,7 +35,7 @@ export default class FlickrPage extends Component {
   infinateScroll() {
     const tiles = document.querySelector('#tiles');
     if (tiles.scrollTop + tiles.clientHeight >= tiles.scrollHeight) {
-      this.callApi();
+      this.callApi(true);
     }
   }
 
@@ -60,10 +60,8 @@ export default class FlickrPage extends Component {
     });
   }
 
-  callApi(e) {
-    if (e) e.preventDefault();
-    console.log('calling api');
-    fetch(
+  callApi(rerun = false) {
+    return fetch(
       '/services/feeds/photos_public.gne?format=json', {
         accept: 'application/json',
       },
@@ -83,13 +81,35 @@ export default class FlickrPage extends Component {
         const newFeeds = json.items.filter(item => (
           JSON.stringify(stateFeeds).indexOf(item.link) === -1
         ));
-        const feeds = [...stateFeeds, ...newFeeds];
-        this.setState({ feeds });
+        if (newFeeds.length > 0) {
+          const feeds = [...stateFeeds, ...newFeeds];
+          this.setState({ feeds });
+        }
+      })
+      .then(() => {
+        if (rerun) {
+          const tiles = document.querySelector('#tiles');
+          if (tiles.scrollTop + tiles.clientHeight >= (tiles.scrollHeight - 1000)) {
+            const reCall = this.callApi.bind(this);
+            reCall(true);
+          }
+        }
       })
       .catch(err => console.log(err));
   }
 
   render() {
+    // call api every 10 seconds
+    const intervalApi = (() => {
+      const tiles = document.querySelector('#tiles');
+      if (tiles != null) {
+        if (tiles.scrollTop + tiles.clientHeight >= (tiles.scrollHeight / 3)) {
+          this.callApi();
+        }
+      }
+      setInterval(intervalApi, 500);
+    })();
+
     return (
       <div className="wrap" id="wrap">
         <Container>
@@ -108,7 +128,6 @@ export default class FlickrPage extends Component {
             feeds={this.state.feeds}
           />
         </Container>
-
       </div>
     );
   }
