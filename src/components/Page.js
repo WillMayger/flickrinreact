@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Container from './Containers/Container';
-import Nav from './Nav/Nav';
 import Search from './Search/Search';
 import Tiles from './Tiles/Tiles';
 
@@ -113,16 +112,11 @@ export default class FlickrPage extends Component {
     return (
       <div className="wrap" id="wrap">
         <Container>
-          <Nav />
-        </Container>
-
-        <Container>
           <Search
             onChange={this.updateSearchQuery}
             query={this.state.query}
           />
         </Container>
-
         <Container>
           <Tiles
             feeds={this.state.feeds}
