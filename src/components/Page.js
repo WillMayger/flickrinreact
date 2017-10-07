@@ -1,9 +1,17 @@
+import Flickr from 'flickr-sdk';
 import React, { Component } from 'react';
 import Container from './Containers/Container';
 import Search from './Search/Search';
 import Tiles from './Tiles/Tiles';
 
 export default class FlickrPage extends Component {
+  static mergeArraysNoRepeat(main, addition) {
+    const mergedArray = addition.filter(item => (
+      JSON.stringify(main).indexOf(item.id) === -1
+    ));
+    return [...main, ...mergedArray];
+  }
+
   constructor() {
     super();
     this.state = {
@@ -12,6 +20,8 @@ export default class FlickrPage extends Component {
       feedsPreSearch: [],
       clickedClass: '',
     };
+
+    this.flickr = new Flickr('API KEY HERE');
 
     this.updateSearchQuery = this.updateSearchQuery.bind(this);
     this.callApi = this.callApi.bind(this);
@@ -26,6 +36,15 @@ export default class FlickrPage extends Component {
   componentDidMount() {
     const tiles = document.querySelector('#tiles');
     tiles.addEventListener('scroll', this.infinateScroll);
+
+    // call api every 10 seconds
+    const intervalApi = () => {
+      if (tiles.scrollTop + tiles.clientHeight >= (tiles.scrollHeight / 3)) {
+        this.callApi(true);
+      }
+      setTimeout(() => { intervalApi(); }, 10000);
+    };
+    intervalApi();
   }
 
   componentWillUnmount() {
@@ -42,9 +61,9 @@ export default class FlickrPage extends Component {
 
   updateSearchQuery(e, optionalFeeds = []) {
     const query = typeof e === 'string' ? e : e.target.value;
-    let filterFeeds = this.mergeArraysNoRepeat(this.state.feeds, optionalFeeds);
+    let filterFeeds = FlickrPage.mergeArraysNoRepeat(this.state.feeds, optionalFeeds);
     if (this.state.feedsPreSearch.length > 0) {
-      filterFeeds = this.mergeArraysNoRepeat(this.state.feedsPreSearch, optionalFeeds);
+      filterFeeds = FlickrPage.mergeArraysNoRepeat(this.state.feedsPreSearch, optionalFeeds);
     }
 
     if (query === '') {
@@ -57,10 +76,11 @@ export default class FlickrPage extends Component {
     }
 
     const feeds = filterFeeds.filter((item) => {
-      if (item.title.indexOf(query) >= 0 ||
-      item.tags.indexOf(query) >= 0 ||
-      item.description.indexOf(query) >= 0 ||
-      item.author.indexOf(query) >= 0) {
+      if (item.title.toLowerCase().indexOf(query.toLowerCase()) >= 0 ||
+      item.tags.toLowerCase().indexOf(query.toLowerCase()) >= 0 ||
+      item.ownername.toLowerCase().indexOf(query.toLowerCase()) >= 0 ||
+      item.id.indexOf(query) >= 0 ||
+      item.owner.indexOf(query) >= 0) {
         return true;
       }
       return false;
@@ -73,43 +93,15 @@ export default class FlickrPage extends Component {
     });
   }
 
-  mergeArraysNoRepeat(main, addition) {
-    const mergedArray = addition.filter(item => (
-      JSON.stringify(main).indexOf(item.link) === -1
-    ));
-    return [...main, ...mergedArray];
-  }
-
   callApi(rerun = false) {
-    return fetch(
-      '/services/feeds/photos_public.gne?format=json', {
-        accept: 'application/json',
-      },
-    )
-      .then(res => res.text())
-      .then((string) => {
-        // this is due to the json of flickr being invalid
-        // when using the json feed.
-        let jsonString = string;
-        jsonString = jsonString.split('jsonFlickrFeed({').join('{');
-        jsonString = jsonString.split('\\\'').join('\'');
-        jsonString = jsonString.replace(/.$/, '');
-        return JSON.parse(jsonString);
-      })
-      .then((json) => {
+    this.flickr.photos.getRecent({ extras: ['owner_name', 'tags'] })
+      .then(res => res.body.photos.photo)
+      .then((array) => {
         const stateFeeds = this.state.feeds;
-        let feeds = this.mergeArraysNoRepeat(stateFeeds, json.items);
+        let feeds = FlickrPage.mergeArraysNoRepeat(stateFeeds, array);
         if (feeds.length > stateFeeds.length) {
           feeds = feeds.map((item) => {
             const feedItem = item;
-            feedItem.author = feedItem.author
-              .split('nobody@flickr.com')
-              .join('')
-              .split('("')
-              .join('')
-              .split('")')
-              .join('');
-
             if (feedItem.title.split(' ').join('') === '') {
               feedItem.title = '"No Title Provided"';
             }
@@ -141,17 +133,6 @@ export default class FlickrPage extends Component {
   }
 
   render() {
-    // call api every 10 seconds
-    const intervalApi = (() => {
-      const tiles = document.querySelector('#tiles');
-      if (tiles != null) {
-        if (tiles.scrollTop + tiles.clientHeight >= (tiles.scrollHeight / 3)) {
-          this.callApi(true);
-        }
-      }
-      setInterval(intervalApi, 500);
-    })();
-
     return (
       <div className="wrap" id="wrap">
         <Container>

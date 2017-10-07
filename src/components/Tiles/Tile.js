@@ -4,14 +4,14 @@ import PropTypes from 'prop-types';
 const Tile = props => (
   <div className="tile">
     <div className="inner">
-      <a href={props.link} title={props.title} target="_blank">
+      <a href={`https://www.flickr.com/photos/${props.owner}/${props.id}`} title={props.title} target="_blank">
         <div className="thumb">
-          <img src={props.media.m} title={props.title} alt={props.title} />
+          <img src={`https://farm${props.farm}.staticflickr.com/${props.server}/${props.id}_${props.secret}.jpg`} title={props.title} alt={props.title} />
         </div>
       </a>
       <div className="text-container">
         <span className="title"><span>{props.title}</span></span>
-        <span><a href={`https://www.flickr.com/people/${props.author_id}`} target="_blank" >By: {props.author}</a></span>
+        <span><a href={`https://www.flickr.com/people/${props.owner}`} target="_blank" >By: {props.ownername}</a></span>
         <span className="tags">Tags: {props.tags}</span>
       </div>
     </div>
@@ -19,11 +19,13 @@ const Tile = props => (
 );
 
 Tile.propTypes = {
-  media: PropTypes.object.isRequired,
+  secret: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  server: PropTypes.string.isRequired,
+  farm: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
-  author: PropTypes.string.isRequired,
-  link: PropTypes.string.isRequired,
-  author_id: PropTypes.string.isRequired,
+  ownername: PropTypes.string.isRequired,
+  owner: PropTypes.string.isRequired,
   tags: PropTypes.string.isRequired,
 };
 

@@ -7,7 +7,7 @@ const Tiles = (props) => {
   if (props.feeds && props.feeds !== {}) {
     tiles = props.feeds.map(item => (
       <Tile
-        key={`tile ${item.link} ${item.title} ${item.author} ${item.published} ${item.date_taken}`}
+        key={`tile ${item.id}`}
         {...item}
       />
     ));
