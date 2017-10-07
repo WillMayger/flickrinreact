@@ -16,17 +16,22 @@ export default class FlickrPage extends Component {
     super();
     this.state = {
       query: '',
-      feeds: [],
+      filter: '',
       feedsPreSearch: [],
-      clickedClass: '',
+      feedsPreFilter: [],
+      feeds: [],
+      clickedFilter: '',
+      clickedSearch: '',
     };
 
-    this.flickr = new Flickr('API KEY HERE');
+    this.flickr = new Flickr('3ad4bb148ebb914553a27ee8e4cd664a');
 
-    this.updateSearchQuery = this.updateSearchQuery.bind(this);
+    this.updateFilter = this.updateFilter.bind(this);
+    this.updateSearch = this.updateSearch.bind(this);
     this.callApi = this.callApi.bind(this);
     this.infinateScroll = this.infinateScroll.bind(this);
-    this.toggleKeywordText = this.toggleKeywordText.bind(this);
+    this.toggleKeywordSearch = this.toggleKeywordSearch.bind(this);
+    this.toggleKeywordFilter = this.toggleKeywordFilter.bind(this);
   }
 
   componentWillMount() {
@@ -36,15 +41,6 @@ export default class FlickrPage extends Component {
   componentDidMount() {
     const tiles = document.querySelector('#tiles');
     tiles.addEventListener('scroll', this.infinateScroll);
-
-    // call api every 10 seconds
-    const intervalApi = () => {
-      if (tiles.scrollTop + tiles.clientHeight >= (tiles.scrollHeight / 3)) {
-        this.callApi(true);
-      }
-      setTimeout(() => { intervalApi(); }, 10000);
-    };
-    intervalApi();
   }
 
   componentWillUnmount() {
@@ -59,42 +55,87 @@ export default class FlickrPage extends Component {
     }
   }
 
-  updateSearchQuery(e, optionalFeeds = []) {
+  updateSearch(e) {
+    this.setState({ clickedSearch: 'hidden' });
     const query = typeof e === 'string' ? e : e.target.value;
-    let filterFeeds = FlickrPage.mergeArraysNoRepeat(this.state.feeds, optionalFeeds);
-    if (this.state.feedsPreSearch.length > 0) {
-      filterFeeds = FlickrPage.mergeArraysNoRepeat(this.state.feedsPreSearch, optionalFeeds);
-    }
+    const searchFeeds = this.state.feedsPreSearch.length > 0 ?
+      this.state.feedsPreSearch : [];
 
     if (query === '') {
       this.setState({
         query,
-        feeds: filterFeeds,
+        feeds: searchFeeds,
         feedsPreSearch: [],
+        clickedSearch: '',
       });
+      if (typeof e !== 'string') {
+        document.activeElement.blur();
+      }
+      this.callApi();
+      return;
+    }
+
+    this.flickr.photos.search({
+      text: query,
+      extras: ['owner_name', 'tags'],
+      per_page: this.state.feedsPreSearch.length + 100,
+    })
+      .then(res => res.body.photos.photo)
+      .then((array) => {
+        const newSearchFeeds = FlickrPage.mergeArraysNoRepeat(searchFeeds, array);
+        this.setState({
+          query,
+          feeds: newSearchFeeds,
+          feedsPreSearch: searchFeeds.length > 0 ? searchFeeds : newSearchFeeds,
+        });
+        if (this.state.filter !== '') {
+          this.updateFilter(this.state.filter, newSearchFeeds);
+        }
+      });
+  }
+
+  updateFilter(e, optionalFeeds = []) {
+    this.setState({ clickedFilter: 'hidden' });
+    const filter = typeof e === 'string' ? e : e.target.value;
+    let filterFeeds = FlickrPage.mergeArraysNoRepeat(this.state.feeds, optionalFeeds);
+    if (this.state.feedsPreFilter.length > 0) {
+      filterFeeds = FlickrPage.mergeArraysNoRepeat(this.state.feedsPreFilter, optionalFeeds);
+    }
+
+    if (filter === '') {
+      this.setState({
+        filter,
+        feeds: filterFeeds,
+        feedsPreFilter: [],
+        clickedFilter: '',
+      });
+      if (typeof e !== 'string') {
+        document.activeElement.blur();
+      }
       return;
     }
 
     const feeds = filterFeeds.filter((item) => {
-      if (item.title.toLowerCase().indexOf(query.toLowerCase()) >= 0 ||
-      item.tags.toLowerCase().indexOf(query.toLowerCase()) >= 0 ||
-      item.ownername.toLowerCase().indexOf(query.toLowerCase()) >= 0 ||
-      item.id.indexOf(query) >= 0 ||
-      item.owner.indexOf(query) >= 0) {
+      if (item.title.toLowerCase().indexOf(filter.toLowerCase()) >= 0 ||
+      item.tags.toLowerCase().indexOf(filter.toLowerCase()) >= 0 ||
+      item.ownername.toLowerCase().indexOf(filter.toLowerCase()) >= 0 ||
+      item.id.indexOf(filter) >= 0 ||
+      item.owner.indexOf(filter) >= 0) {
         return true;
       }
       return false;
     });
 
     this.setState({
-      query,
+      filter,
       feeds,
-      feedsPreSearch: filterFeeds,
+      feedsPreFilter: filterFeeds,
     });
   }
 
   callApi(rerun = false) {
-    this.flickr.photos.getRecent({ extras: ['owner_name', 'tags'] })
+    if (this.state.query !== '') return this.updateSearch(this.state.query, this.state.feeds.length + 100);
+    return this.flickr.photos.getRecent({ extras: ['owner_name', 'tags'] })
       .then(res => res.body.photos.photo)
       .then((array) => {
         const stateFeeds = this.state.feeds;
@@ -108,8 +149,8 @@ export default class FlickrPage extends Component {
             return feedItem;
           });
           if (feeds.length > 200) feeds.splice(0, 100);
-          if (this.state.query !== '') {
-            this.updateSearchQuery(this.state.query, feeds);
+          if (this.state.filter !== '') {
+            this.updateSearchQuery(this.state.filter, feeds);
           } else {
             this.setState({ feeds });
           }
@@ -127,21 +168,37 @@ export default class FlickrPage extends Component {
       .catch(err => console.log(err));
   }
 
-  toggleKeywordText(e) {
+  toggleKeywordFilter(e) {
     e.preventDefault();
-    this.setState({ clickedClass: 'hidden' });
+    this.setState({ clickedFilter: 'hidden' });
+  }
+
+  toggleKeywordSearch(e) {
+    e.preventDefault();
+    this.setState({ clickedSearch: 'hidden' });
   }
 
   render() {
     return (
       <div className="wrap" id="wrap">
         <Container>
-          <Search
-            onChange={this.updateSearchQuery}
-            onClick={this.toggleKeywordText}
-            clickedClass={this.state.clickedClass}
-            query={this.state.query}
-          />
+          <div className="search">
+            <Search
+              onChange={this.updateSearch}
+              onClick={this.toggleKeywordSearch}
+              clickedClass={this.state.clickedSearch}
+              query={this.state.query}
+              type={'Search'}
+            />
+
+            <Search
+              onChange={this.updateFilter}
+              onClick={this.toggleKeywordFilter}
+              clickedClass={this.state.clickedFilter}
+              query={this.state.filter}
+              type={'Filter'}
+            />
+          </div>
         </Container>
         <Container>
           <Tiles
