@@ -10,11 +10,13 @@ export default class FlickrPage extends Component {
       query: '',
       feeds: [],
       feedsPreSearch: [],
+      clickedClass: '',
     };
 
     this.updateSearchQuery = this.updateSearchQuery.bind(this);
     this.callApi = this.callApi.bind(this);
     this.infinateScroll = this.infinateScroll.bind(this);
+    this.toggleKeywordText = this.toggleKeywordText.bind(this);
   }
 
   componentWillMount() {
@@ -38,11 +40,13 @@ export default class FlickrPage extends Component {
     }
   }
 
-  updateSearchQuery(e, optionalFeeds = false) {
+  updateSearchQuery(e, optionalFeeds = []) {
     const query = typeof e === 'string' ? e : e.target.value;
-    let filterFeeds = this.state.feedsPreSearch.length > 0 ?
-      this.state.feedsPreSearch : this.state.feeds;
-    if (optionalFeeds) filterFeeds = optionalFeeds;
+    let filterFeeds = this.mergeArraysNoRepeat(this.state.feeds, optionalFeeds);
+    if (this.state.feedsPreSearch.length > 0) {
+      filterFeeds = this.mergeArraysNoRepeat(this.state.feedsPreSearch, optionalFeeds);
+    }
+
     if (query === '') {
       this.setState({
         query,
@@ -69,6 +73,13 @@ export default class FlickrPage extends Component {
     });
   }
 
+  mergeArraysNoRepeat(main, addition) {
+    const mergedArray = addition.filter(item => (
+      JSON.stringify(main).indexOf(item.link) === -1
+    ));
+    return [...main, ...mergedArray];
+  }
+
   callApi(rerun = false) {
     return fetch(
       '/services/feeds/photos_public.gne?format=json', {
@@ -87,11 +98,24 @@ export default class FlickrPage extends Component {
       })
       .then((json) => {
         const stateFeeds = this.state.feeds;
-        const newFeeds = json.items.filter(item => (
-          JSON.stringify(stateFeeds).indexOf(item.link) === -1
-        ));
-        if (newFeeds.length > 0) {
-          const feeds = [...stateFeeds, ...newFeeds];
+        let feeds = this.mergeArraysNoRepeat(stateFeeds, json.items);
+        if (feeds.length > stateFeeds.length) {
+          feeds = feeds.map((item) => {
+            const feedItem = item;
+            feedItem.author = feedItem.author
+              .split('nobody@flickr.com')
+              .join('')
+              .split('("')
+              .join('')
+              .split('")')
+              .join('');
+
+            if (feedItem.title.split(' ').join('') === '') {
+              feedItem.title = '"No Title Provided"';
+            }
+            return feedItem;
+          });
+          if (feeds.length > 200) feeds.splice(0, 100);
           if (this.state.query !== '') {
             this.updateSearchQuery(this.state.query, feeds);
           } else {
@@ -111,6 +135,11 @@ export default class FlickrPage extends Component {
       .catch(err => console.log(err));
   }
 
+  toggleKeywordText(e) {
+    e.preventDefault();
+    this.setState({ clickedClass: 'hidden' });
+  }
+
   render() {
     // call api every 10 seconds
     const intervalApi = (() => {
@@ -128,6 +157,8 @@ export default class FlickrPage extends Component {
         <Container>
           <Search
             onChange={this.updateSearchQuery}
+            onClick={this.toggleKeywordText}
+            clickedClass={this.state.clickedClass}
             query={this.state.query}
           />
         </Container>

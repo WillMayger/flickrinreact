@@ -3,6 +3,7 @@
   .tile {
     cursor: pointer;
     box-sizing: border-box;
+    text-align: center;
     padding: 10px;
     width: 100%;
     max-width: 400px;
@@ -15,28 +16,54 @@
       position: relative;
       box-shadow: 0 0 12px 0 #000;
     }
+    
+    span {
+      display: block;
+      color: #fff;
+    }
 
     a {
       display: block;
+      color: #008C8C;
     }
 
     .text-container {
       position: absolute;
       text-align: center;
+      pointer-events: none;
       transition: all 0.5s;
       top: 100%;
       left: 0;
       right: 0;
-      max-height: 50px;
+      max-height: 70px;
       height: 100%;
-      transform: translateY(-50px);
+      transform: translateY(-70px);
       background: transparentize(#000, 0.3);
+      
+      .tags {
+        line-height: normal;
+      }
+      
+      a {
+        pointer-events: auto;
+        padding-bottom: 20px;
+      }
 
       .title {
+        vertical-align: middle;
         display: block;
+        overflow: hidden;
         color: #fff;
-        height: 50px;
-        line-height: 50px;
+        height: 70px;
+        line-height: 70px;
+        padding: 0 20px;
+        padding-bottom: 10px;
+        
+        span {
+          vertical-align: middle;
+          display: inline-block;
+          line-height: normal;
+        }
       }
     }
 
@@ -52,7 +79,6 @@
       height: 300px;
 
       &:after {
-        content: "";
         position: absolute;
         display: block;
         top: 0;
@@ -99,7 +125,7 @@
         .text-container {
           background: transparentize(#000, 0.1);
           max-height: none;
-          top: 50px;
+          top: 70px;
         }
       }
     }

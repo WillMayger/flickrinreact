@@ -8,9 +8,26 @@
   height: 70px;
   line-height: 70px;
   // box-shadow: 0 11px 24px -6px #000;
-  background: transparentize(#008C8C, 0);
+  background: #008C8C;
   border-bottom: 10px solid #000;
   color: #fff;
+  
+  div {
+    position: relative;
+  }
+  
+  .auto-text {
+    pointer-events: none;
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    font-size: 25px;
+    transform: translateY(-50%);
+    
+    &.hidden {
+      display: none;
+    }
+  }
 
   input {
     box-sizing: border-box;
