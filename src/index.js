@@ -5,7 +5,7 @@ import registerServiceWorker from './registerServiceWorker';
 import Page from './components/Page';
 
 const FlickrPage = () => (
-  <Page APIKEY={'3ad4bb148ebb914553a27ee8e4cd664a'} />
+  <Page APIKEY={'Api Key Goes Here'} />
 );
 
 ReactDOM.render(<FlickrPage />, document.getElementById('root'));
