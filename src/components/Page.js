@@ -1,7 +1,7 @@
-import Flickr from 'flickr-sdk';
 import Typist from 'react-typist';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Flickr from '../flickr-sdk';
 import Container from './Containers/Container';
 import Search from './Search/Search';
 import Tiles from './Tiles/Tiles';
@@ -353,7 +353,7 @@ export default class FlickrPage extends Component {
 
   render() {
     return (
-      <div className="wrap" id="wrap">
+      <div className="wrap flickr-page" id="wrap">
         <Container>
           <div className="search">
             <Search

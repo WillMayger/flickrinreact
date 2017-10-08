@@ -1,0 +1,150 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "flickr-sdk",
+        "scope": null,
+        "escapedName": "flickr-sdk",
+        "name": "flickr-sdk",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "/Users/willmayger/workspace/flickrinreact"
+    ]
+  ],
+  "_from": "flickr-sdk@latest",
+  "_id": "flickr-sdk@3.4.0",
+  "_inCache": true,
+  "_location": "/flickr-sdk",
+  "_nodeVersion": "4.5.0",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/flickr-sdk-3.4.0.tgz_1507142461224_0.7089906542096287"
+  },
+  "_npmUser": {
+    "name": "jeremyruppel",
+    "email": "jeremy.ruppel@gmail.com"
+  },
+  "_npmVersion": "2.15.9",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "flickr-sdk",
+    "scope": null,
+    "escapedName": "flickr-sdk",
+    "name": "flickr-sdk",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/flickr-sdk/-/flickr-sdk-3.4.0.tgz",
+  "_shasum": "af81b5fdce158a6e8ce8af71153027672743968a",
+  "_shrinkwrap": null,
+  "_spec": "flickr-sdk",
+  "_where": "/Users/willmayger/workspace/flickrinreact",
+  "author": "",
+  "browser": {
+    "./plugins/json.js": "./plugins/json-browser.js",
+    "./plugins/oauth.js": "./plugins/oauth-browser.js",
+    "./services/oauth.js": "./services/oauth-browser.js"
+  },
+  "bugs": {
+    "url": "https://github.com/flickr/flickr-sdk/issues"
+  },
+  "dependencies": {
+    "superagent": "^3.5.3-beta.2",
+    "xml2js": "^0.4.17"
+  },
+  "description": "Almost certainly the best Flickr API client in the world for node and the browser",
+  "devDependencies": {
+    "browserify": "^14.4.0",
+    "chalk": "^2.0.1",
+    "dotprune": "^0.1.10",
+    "ejs": "~2.5.2",
+    "eslint": "^4.2.0",
+    "eslint-config-flickr": "~1.3.1",
+    "eslint-plugin-header": "^1.0.0",
+    "indent-string": "^3.1.0",
+    "jsdoc-to-markdown": "^3.0.0",
+    "mocha": "~3.0.2",
+    "nock": "~8.0.0",
+    "node-http-xhr": "^1.3.4",
+    "nyc": "^10.3.2",
+    "ora": "^1.3.0",
+    "p-limit": "^1.1.0",
+    "require-dir": "~0.3.1",
+    "sinon": "~1.17.6",
+    "stringify-object": "^3.2.0"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "af81b5fdce158a6e8ce8af71153027672743968a",
+    "tarball": "https://registry.npmjs.org/flickr-sdk/-/flickr-sdk-3.4.0.tgz"
+  },
+  "engines": {
+    "node": ">= 4"
+  },
+  "files": [
+    "index.js",
+    "flickr-sdk.js",
+    "lib",
+    "plugins",
+    "services"
+  ],
+  "gitHead": "0bfad869c779f7f0417ef7e6dc4b5cdbe2ad9326",
+  "homepage": "https://github.com/flickr/flickr-sdk#readme",
+  "keywords": [
+    "flickr",
+    "api",
+    "sdk",
+    "photos",
+    "search"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "name": "alex-seville",
+      "email": "hi@alexanderseville.com"
+    },
+    {
+      "name": "jeremyruppel",
+      "email": "jeremy.ruppel@gmail.com"
+    },
+    {
+      "name": "pdokas",
+      "email": "phil@jetless.org"
+    },
+    {
+      "name": "superic",
+      "email": "eric.willis@gmail.com"
+    }
+  ],
+  "name": "flickr-sdk",
+  "optionalDependencies": {},
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/flickr/flickr-sdk.git"
+  },
+  "scripts": {
+    "build": "npm run build-rest && npm run build-docs && npm run build-client",
+    "build-client": "browserify -s Flickr $npm_package_main > flickr-sdk.js",
+    "build-docs": "node script/build-docs > README.md",
+    "build-rest": "node script/build-rest > services/rest.js",
+    "build-tests": "node script/build-tests",
+    "coverage": "nyc mocha",
+    "lint": "eslint .",
+    "prepublish": "npm run build",
+    "reflect": "node script/reflect",
+    "test": "mocha"
+  },
+  "version": "3.4.0"
+}
