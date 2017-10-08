@@ -4,7 +4,7 @@ import Tile from './Tile';
 
 const Tiles = (props) => {
   let tiles = 'No Feed Available';
-  if (props.feeds && props.feeds !== {}) {
+  if (props.feeds && props.feeds !== []) {
     tiles = props.feeds.map(item => (
       <Tile
         key={`tile ${item.id}`}
