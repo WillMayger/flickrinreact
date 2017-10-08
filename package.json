@@ -17,6 +17,7 @@
   },
   "license": "MIT",
   "private": true,
+  "main": "./src/components/Page.js",
   "repository":
   { 
     "type" : "git",

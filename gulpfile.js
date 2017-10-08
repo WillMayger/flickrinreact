@@ -33,7 +33,7 @@ gulp.task('scss', () => {
   return merge(scssStream)
     .pipe(concat('main.min.css'))
     .pipe(cssnano())
-    .pipe(gulp.dest('./public/css'))
+    .pipe(gulp.dest('./src/components/css'))
   ;
 });
 

@@ -1,9 +1,11 @@
 import Flickr from 'flickr-sdk';
 import Typist from 'react-typist';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Container from './Containers/Container';
 import Search from './Search/Search';
 import Tiles from './Tiles/Tiles';
+import './css/main.min.css';
 
 export default class FlickrPage extends Component {
   // takes two arrays and returns a merged array with no duplicates
@@ -21,7 +23,7 @@ export default class FlickrPage extends Component {
     return first.concat(newArray);
   }
 
-  constructor() {
+  constructor(props) {
     super();
     this.state = {
       query: '',
@@ -34,7 +36,7 @@ export default class FlickrPage extends Component {
       lengthOfHistory: 0,
     };
 
-    this.flickr = new Flickr('Your Api Key Here');
+    this.flickr = new Flickr(props.APIKEY);
 
     // class method bindings
     this.updateFilter = this.updateFilter.bind(this);
@@ -382,3 +384,7 @@ export default class FlickrPage extends Component {
     );
   }
 }
+
+FlickrPage.propTypes = {
+  APIKEY: PropTypes.string.isRequired,
+};
