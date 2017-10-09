@@ -1,5 +1,5 @@
 .search {
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
   left: 0;
@@ -11,7 +11,7 @@
   background: #008C8C;
   border-bottom: 10px solid #000;
   color: #fff;
-  
+
   .search-field {
     box-sizing: border-box;
     position: relative;
@@ -22,7 +22,7 @@
     padding: 0 10px;
     margin: 0;
   }
-  
+
   .auto-text {
     pointer-events: none;
     position: absolute;
@@ -30,7 +30,7 @@
     top: 50%;
     font-size: 16px;
     transform: translateY(-50%);
-    
+
     &.hidden {
       display: none;
     }
@@ -63,15 +63,15 @@
     height: 70px;
     padding: 0 50px;
     line-height: 70px;
-    
+
     .search-field {
       padding: 0 50px;
       width: 50%;
-      
+
       input {
         font-size: 25px;
       }
-      
+
       .auto-text {
         font-size: 25px;
         left: 70px;
