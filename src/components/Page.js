@@ -1,7 +1,7 @@
 import Typist from 'react-typist';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Flickr from '../flickr-sdk';
+import Flickr from '../api/Flickr';
 import Container from './Containers/Container';
 import Search from './Search/Search';
 import Tiles from './Tiles/Tiles';
@@ -36,7 +36,8 @@ export default class FlickrPage extends Component {
       lengthOfHistory: 0,
     };
 
-    this.flickr = new Flickr(props.APIKEY);
+    const flickr = new Flickr(props.APIKEY);
+    this.flickr = flickr;
 
     // class method bindings
     this.updateFilter = this.updateFilter.bind(this);
@@ -93,17 +94,11 @@ export default class FlickrPage extends Component {
     // prevent page from getting slow.
     if (searchFeeds.length > 200) searchFeeds.splice(0, 100);
 
+    const perpage = (this.state.lengthOfHistory * 100) + 100;
+    const page = this.state.lengthOfHistory >= 4 ?
+      1 + this.state.lengthOfHistory : 1;
     // make api call with search query
-    this.flickr.photos.search({
-      text: query,
-      extras: ['owner_name', 'tags'],
-      // load 100 more each time user reaches the end
-      per_page: (this.state.lengthOfHistory * 100) + 100,
-      // go to second page in api if the max photo per page has been reached
-      page: this.state.lengthOfHistory >= 4 ?
-        1 + this.state.lengthOfHistory : 1,
-    })
-      .then(res => res.body.photos.photo)
+    this.flickr.getPhotosByQuery(query, page, perpage)
       .then((array) => {
         let newSearchFeeds = [];
 
@@ -150,16 +145,9 @@ export default class FlickrPage extends Component {
     let count = iteration;
     let pageCount = pageC;
 
-    // call api
-    this.flickr.photos.getRecent({
-      extras: ['owner_name', 'tags'],
-      // add 100 results everytime function is called recursively 
-      per_page: (count * 100) + 100,
-      // the page value (default 1) adds an aditional for every 500 results
-      page: pageCount,
-    })
-      .then(res => res.body.photos.photo)
+    this.flickr.getRecentPhotos(pageCount, (count * 100) + 100)
       .then((array) => {
+        console.log(array);
         const stateFeeds = this.state.feeds;
         let feeds = FlickrPage.mergeArraysNoRepeat(stateFeeds, array);
         // check to see if there are any new results
@@ -184,7 +172,7 @@ export default class FlickrPage extends Component {
           const tiles = document.querySelector('#tiles');
           // check that the user has scrolled enough to regester for another call
           if (tiles.scrollTop + tiles.clientHeight >= (tiles.scrollHeight - 1000)) {
-            // if this has ran 4 times or more set count to 0 and add a page 
+            // if this has ran 4 times or more set count to 0 and add a page
             if (count >= 4) {
               pageCount += 1;
               count = 0;
@@ -247,7 +235,7 @@ export default class FlickrPage extends Component {
 
   // update state with search input
   updateSearch(e) {
-    // if function is used by another method 
+    // if function is used by another method
     const query = e === undefined ? this.state.query : e.target.value;
 
     // if user just entered spaces cancel
@@ -279,7 +267,7 @@ export default class FlickrPage extends Component {
   }
 
   updateFilter(e, optionalFeeds = []) {
-    // if function is used by another method 
+    // if function is used by another method
     const filter = typeof e === 'string' ? e : e.target.value;
 
     // if user just entered spaces cancel
@@ -387,4 +375,5 @@ export default class FlickrPage extends Component {
 
 FlickrPage.propTypes = {
   APIKEY: PropTypes.string.isRequired,
+  SECRET: PropTypes.string.isRequired,
 };
