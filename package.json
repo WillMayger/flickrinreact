@@ -56,7 +56,5 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  },
-  "_comment": "  \"proxy\": \"https://api.flickr.com\"",
-  "proxy": "https://api.flickr.com"
+  }
 }

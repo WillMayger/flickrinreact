@@ -6,6 +6,7 @@ Using the Flickr API with React.js
 ###  To use:
   - clone this repository,
   - run npm install.
+  - Change the homepage url in package.json to your homepage.
   - Add in your Flickr API key in index.js or replace the string with a system variable.
   - then run `gulp` for development. (or `npm run startdev`).
 

@@ -7,7 +7,7 @@ export default class Flickr {
       query = `&text=${options.query.split(' ').join('+')}`;
     }
 
-    return `/services/rest/?method=${options.method}&format=json&nojsoncallback=1&api_key=${options.key}&extras=tags,owner_name&page=${options.page}&per_page=${options.per_page}${query}`;
+    return `https://api.flickr.com/services/rest/?method=${options.method}&format=json&nojsoncallback=1&api_key=${options.key}&extras=tags,owner_name&page=${options.page}&per_page=${options.per_page}${query}`;
   }
 
   constructor(key) {
