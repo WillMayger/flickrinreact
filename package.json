@@ -2,29 +2,33 @@
   "name": "flickrinreact",
   "version": "0.1.0",
   "description": "Flickr application using react.js and node.",
-  "keywords": ["react", "flickr", "api", "node", "scss", "css", "html"],
+  "keywords": [
+    "react",
+    "flickr",
+    "api",
+    "node",
+    "scss",
+    "css",
+    "html"
+  ],
   "homepage": "http://willmayger.uk/flickr",
-  "author": 
-  { 
-    "name" : "Will Mayger",
-    "email" : "will.mayger@theweblancer.com",
-    "url" : "http://willmayger.uk/"
+  "author": {
+    "name": "Will Mayger",
+    "email": "will.mayger@theweblancer.com",
+    "url": "http://willmayger.uk/"
   },
-  "bugs": 
-  {
-    "url" : "https://github.com/WillMayger/flickrinreact/issues",
-    "email" : "will.mayger@theweblancer.com"
+  "bugs": {
+    "url": "https://github.com/WillMayger/flickrinreact/issues",
+    "email": "will.mayger@theweblancer.com"
   },
   "license": "MIT",
   "private": true,
   "main": "./src/index.js",
-  "repository":
-  { 
-    "type" : "git",
-    "url" : "https://github.com/WillMayger/flickrinreact"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WillMayger/flickrinreact"
   },
   "dependencies": {
-    "flickr-sdk": "^3.4.0",
     "prop-types": "^15.6.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
@@ -52,7 +56,5 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  },
-  "_comment": "  \"proxy\": \"http://api.flickr.com\"",
-  "proxy": "http://api.flickr.com"
+  }
 }
